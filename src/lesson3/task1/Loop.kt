@@ -1,7 +1,8 @@
 @file:Suppress("UNUSED_PARAMETER")
 package lesson3.task1
 
-import kotlin.math.sqrt
+import lesson6.task1.firstDuplicateIndex
+import kotlin.math.*
 
 /**
  * Пример
@@ -11,7 +12,7 @@ import kotlin.math.sqrt
 fun factorial(n: Int): Double {
     var result = 1.0
     for (i in 1..n) {
-        result = result * i // Please do not fix in master
+        result *= i // Please do not fix in master
     }
     return result
 }
@@ -66,7 +67,28 @@ fun digitCountInNumber(n: Int, m: Int): Int =
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun digitNumber(n: Int): Int = TODO()
+fun digitNumber(n: Int): Int =
+        when {
+            n == 0 -> 1
+            abs(n) < 10 -> 1
+            else -> 1 + digitNumber(n / 10)
+        }
+//fun digitNumber(n: Int): Int {
+//    // loop
+//    var cnt = 0
+//    var tmp = n;
+//    do {
+//        cnt += 1
+//        tmp /= 10
+//    } while (tmp > 0);
+//    return cnt;
+//
+//
+//    // recursion
+//    if (n == 0) return 1
+//    if (abs(n) < 10) return 1
+//    return 1 + digitNumber(n / 10)
+//}
 
 /**
  * Простая
@@ -74,7 +96,26 @@ fun digitNumber(n: Int): Int = TODO()
  * Найти число Фибоначчи из ряда 1, 1, 2, 3, 5, 8, 13, 21, ... с номером n.
  * Ряд Фибоначчи определён следующим образом: fib(1) = 1, fib(2) = 1, fib(n+2) = fib(n) + fib(n+1)
  */
-fun fib(n: Int): Int = TODO()
+fun fib(n: Int): Int {
+    // loop
+    if (n < 1) return 0
+    if (n < 3) return 1
+
+    var n1 = 1
+    var n2 = 1
+    var tmp = 0
+    for (i in 3 until n) {
+        tmp = n1
+        n1 = n2
+        n2 += tmp
+    }
+    return n1 + n2
+
+//    // recursion
+//    if (n < 1) return 0
+//    if (n < 3) return 1
+//    return fib(n - 2) + fib(n - 1)
+}
 
 /**
  * Простая
@@ -82,21 +123,67 @@ fun fib(n: Int): Int = TODO()
  * Для заданных чисел m и n найти наименьшее общее кратное, то есть,
  * минимальное число k, которое делится и на m и на n без остатка
  */
-fun lcm(m: Int, n: Int): Int = TODO()
+//fun main(args: Array<String>) {
+////    println(lcm(12, 16))
+////    println(minDivisor(75 / 3))
+////    println(maxDivisor(24))
+//}
+
+
+fun lcm(m: Int, n: Int): Int {
+    // base
+    if (m == 0 || n == 0) return 0
+    if (m == 1 || n == 1) return max(m, n)
+    if (m == n) return m
+
+    for (i in max(m, n)..(m * n) step max(m, n)) {
+        if (i % m == 0 && i % n == 0) return i
+    }
+    return m * n
+
+//    // recursion NOT WORK
+//    val max_v = max(m, n)
+//    val min_v = min(m, n)
+//    if (max_v == 0 || min_v == 0) return 0
+//    var tmp = max_v % min_v
+//    if (tmp == 0) {
+//        tmp = 0
+//    } else {
+//        tmp = min_v / tmp
+//    }
+//    return lcm(tmp, max_v) + max_v
+}
 
 /**
  * Простая
  *
  * Для заданного числа n > 1 найти минимальный делитель, превышающий 1
  */
-fun minDivisor(n: Int): Int = TODO()
+fun minDivisor(n: Int): Int {
+    // loop
+    if (n < 2) return -1
+    if (n == 2) return 2
+    if (n % 2 == 0) return 2
+    for (i in 3..sqrt(n.toDouble()).toInt() step 2) {
+        if (n % i == 0) return i
+    }
+    return n
+}
 
 /**
  * Простая
  *
  * Для заданного числа n > 1 найти максимальный делитель, меньший n
  */
-fun maxDivisor(n: Int): Int = TODO()
+fun maxDivisor(n: Int): Int {
+    // loop
+    if (n <= 1) return -1
+    if (n % 2 == 0) return n / 2
+    for (i in (n / 2) - 1 downTo 1 step 2) {
+        if (n % i == 0) return i
+    }
+    return 1
+}
 
 /**
  * Простая
@@ -105,7 +192,16 @@ fun maxDivisor(n: Int): Int = TODO()
  * Взаимно простые числа не имеют общих делителей, кроме 1.
  * Например, 25 и 49 взаимно простые, а 6 и 8 -- нет.
  */
-fun isCoPrime(m: Int, n: Int): Boolean = TODO()
+fun isCoPrime(m: Int, n: Int): Boolean {
+
+    val min_val = min(m, n)
+    val max_val = max(m, n)
+    val min_div = minDivisor(min_val)
+    for (i in min_div..min_val) {
+        if (min_val % i == 0 && max_val % i == 0) return false
+    }
+    return true
+}
 
 /**
  * Простая
@@ -114,7 +210,15 @@ fun isCoPrime(m: Int, n: Int): Boolean = TODO()
  * то есть, существует ли такое целое k, что m <= k*k <= n.
  * Например, для интервала 21..28 21 <= 5*5 <= 28, а для интервала 51..61 квадрата не существует.
  */
-fun squareBetweenExists(m: Int, n: Int): Boolean = TODO()
+fun squareBetweenExists(m: Int, n: Int): Boolean {
+    val minv = min(m, n)
+    val maxv = max(m, n)
+    for (i in sqrt(minv.toDouble()).toInt()..sqrt(maxv.toDouble()).toInt()) {
+        println(i)
+        if (i * i in minv..maxv) return true
+    }
+    return false
+}
 
 /**
  * Средняя
@@ -132,7 +236,19 @@ fun squareBetweenExists(m: Int, n: Int): Boolean = TODO()
  * Написать функцию, которая находит, сколько шагов требуется для
  * этого для какого-либо начального X > 0.
  */
-fun collatzSteps(x: Int): Int = TODO()
+fun collatzSteps(x: Int): Int {
+    var tmp = x
+    var cnt = 0
+    while (tmp != 1) {
+        cnt += 1
+        if (tmp % 2 == 0) {
+            tmp /= 2
+        } else {
+            tmp = 3 * tmp + 1
+        }
+    }
+    return cnt
+}
 
 /**
  * Средняя
@@ -191,7 +307,18 @@ fun hasDifferentDigits(n: Int): Boolean = TODO()
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun squareSequenceDigit(n: Int): Int = TODO()
+
+fun squareSequenceDigit(n: Int): Int {
+    // loop
+    var seq_len = 0
+    var int_v = 0
+    while (n > seq_len) {
+        int_v += 1
+        seq_len += digitNumber(int_v * int_v)
+    }
+    val tmp = (10.toDouble().pow(seq_len - n).toInt())
+    return int_v * int_v % (tmp * 10) / tmp
+}
 
 /**
  * Сложная
