@@ -179,7 +179,7 @@ fun maxDivisor(n: Int): Int {
     // loop
     if (n <= 1) return -1
     if (n % 2 == 0) return n / 2
-    for (i in (n / 2) - 1 downTo 1 step 2) {
+    for (i in (n / 2) - 1 downTo 1) {
         if (n % i == 0) return i
     }
     return 1
@@ -195,6 +195,7 @@ fun maxDivisor(n: Int): Int {
 fun isCoPrime(m: Int, n: Int): Boolean {
 
     val min_val = min(m, n)
+    if (min_val == 1) return true
     val max_val = max(m, n)
     val min_div = minDivisor(min_val)
     for (i in min_div..min_val) {

@@ -131,6 +131,7 @@ class Tests {
         assertEquals(1 , maxDivisor(2124679 ))
         assertEquals(1, maxDivisor(1073676287))
         assertEquals(1, maxDivisor(Int.MAX_VALUE))
+        assertEquals(186457, maxDivisor(3542683))
     }
 
     @Test
@@ -142,6 +143,7 @@ class Tests {
         assertFalse(isCoPrime(37, 111))
         assertTrue(isCoPrime(1234567890, 908765431))
         assertTrue(isCoPrime(2109876543, 1234567891))
+        assertTrue(isCoPrime(83649, 1))
     }
 
     @Test
