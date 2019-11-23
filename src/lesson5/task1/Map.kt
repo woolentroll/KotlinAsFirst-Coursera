@@ -94,7 +94,16 @@ fun buildWordSet(text: List<String>): MutableSet<String> {
  *     mapOf("Emergency" to "911", "Police" to "02")
  *   ) -> mapOf("Emergency" to "112, 911", "Police" to "02")
  */
-fun mergePhoneBooks(mapA: Map<String, String>, mapB: Map<String, String>): Map<String, String> = TODO()
+fun mergePhoneBooks(mapA: Map<String, String>, mapB: Map<String, String>): Map<String, String> {
+    val result = (mapB + mapA).toMutableMap()
+    for ((key, value) in result) {
+        val tmp = mapB.getOrDefault(key, value)
+        if (tmp != value) {
+            result[key] = "$value, $tmp"
+        }
+    }
+    return result
+}
 
 /**
  * Простая
@@ -106,7 +115,20 @@ fun mergePhoneBooks(mapA: Map<String, String>, mapB: Map<String, String>): Map<S
  *   buildGrades(mapOf("Марат" to 3, "Семён" to 5, "Михаил" to 5))
  *     -> mapOf(5 to listOf("Семён", "Михаил"), 3 to listOf("Марат"))
  */
-fun buildGrades(grades: Map<String, Int>): Map<Int, List<String>> = TODO()
+fun buildGrades(grades: Map<String, Int>): Map<Int, List<String>> {
+    val result = mutableMapOf<Int, MutableList<String>>()
+    for ((name, grade) in grades) {
+//        val grades_list = result.getOrDefault(grade, mutableListOf())
+//        grades_list.add(name)
+//        result[grade] = grades_list
+        if (grade !in result) {
+            result[grade] = mutableListOf(name)
+        } else {
+            result[grade]?.add(name)
+        }
+    }
+    return result
+}
 
 /**
  * Простая
@@ -118,7 +140,12 @@ fun buildGrades(grades: Map<String, Int>): Map<Int, List<String>> = TODO()
  *   containsIn(mapOf("a" to "z"), mapOf("a" to "z", "b" to "sweet")) -> true
  *   containsIn(mapOf("a" to "z"), mapOf("a" to "zee", "b" to "sweet")) -> false
  */
-fun containsIn(a: Map<String, String>, b: Map<String, String>): Boolean = TODO()
+fun containsIn(a: Map<String, String>, b: Map<String, String>): Boolean {
+    for ((k, v) in a) {
+        if (b[k] != v) return false
+    }
+    return true
+}
 
 /**
  * Средняя
@@ -130,7 +157,21 @@ fun containsIn(a: Map<String, String>, b: Map<String, String>): Boolean = TODO()
  *   averageStockPrice(listOf("MSFT" to 100.0, "MSFT" to 200.0, "NFLX" to 40.0))
  *     -> mapOf("MSFT" to 150.0, "NFLX" to 40.0)
  */
-fun averageStockPrice(stockPrices: List<Pair<String, Double>>): Map<String, Double> = TODO()
+fun averageStockPrice(stockPrices: List<Pair<String, Double>>): Map<String, Double> {
+    val tmp = mutableMapOf<String, MutableList<Double>>()
+    for ((k, v) in stockPrices) {
+        if (k !in tmp) {
+            tmp[k] = mutableListOf(v)
+        } else {
+            tmp[k]?.add(v)
+        }
+    }
+    val result = mutableMapOf<String, Double>()
+    for ((k, v) in tmp) {
+        result[k] = v.average()
+    }
+    return result
+}
 
 /**
  * Средняя
