@@ -43,6 +43,7 @@ fun timeSecondsToStr(seconds: Int): String {
  * Пример: консольный ввод
  */
 fun main(args: Array<String>) {
+    dateDigitToStr("digital: String")
     println("Введите время в формате ЧЧ:ММ:СС")
     val line = readLine()
     if (line != null) {
@@ -71,7 +72,71 @@ fun main(args: Array<String>) {
  * Обратите внимание: некорректная с точки зрения календаря дата (например, 30.02.2009) считается неверными
  * входными данными.
  */
-fun dateStrToDigit(str: String): String = TODO()
+fun daysInMonth(month: Int, year: Int): Int {
+    return if (month == 2) {
+        if (year % 400 == 0 || (year % 100 != 0 && year % 4 == 0)) {
+            29
+        } else {
+            28
+        }
+    } else if (month == 4 || month == 6 || month == 9 || month == 11) {
+        30
+    } else {
+        31
+    }
+}
+
+fun get_month_int(m: String): Int? {
+    val months = mapOf(
+            "января" to 1,
+            "февраля" to 2,
+            "марта" to 3,
+            "апреля" to 4,
+            "мая" to 5,
+            "июня" to 6,
+            "июля" to 7,
+            "августа" to 8,
+            "сентября" to 9,
+            "октября" to 10,
+            "ноября" to 11,
+            "декабря" to 12
+    )
+    return months[m]
+}
+
+fun get_month_string(m: Int): String? {
+    val months = mapOf(
+            1 to "января",
+            2 to "февраля",
+            3 to "марта",
+            4 to "апреля",
+            5 to "мая",
+            6 to "июня",
+            7 to "июля",
+            8 to "августа",
+            9 to "сентября",
+            10 to "октября",
+            11 to "ноября",
+            12 to "декабря"
+    )
+    return months[m]
+}
+
+fun dateStrToDigit(str: String): String {
+    val tmp = str.split(" ");
+    if (tmp.size != 3) return ""
+
+    try {
+        val year = tmp[2].toInt();
+        if (year < 1) return ""
+        val month = get_month_int(tmp[1]) ?: return ""
+        val day = tmp[0].toInt();
+        if (day < 1 || day > daysInMonth(month, year)) return ""
+        return String.format("%02d.%02d.%d", day, month, year);
+    } catch (e: NumberFormatException) {
+        return ""
+    }
+}
 
 /**
  * Средняя
@@ -83,7 +148,21 @@ fun dateStrToDigit(str: String): String = TODO()
  * Обратите внимание: некорректная с точки зрения календаря дата (например, 30 февраля 2009) считается неверными
  * входными данными.
  */
-fun dateDigitToStr(digital: String): String = TODO()
+fun dateDigitToStr(digital: String): String {
+    val tmp = digital.split(".");
+    if (tmp.size != 3) return ""
+
+    try {
+        val year = tmp[2].toInt();
+        if (year < 1) return ""
+        val month = get_month_string(tmp[1].toInt()) ?: return ""
+        val day = tmp[0].toInt();
+        if (day < 1 || day > daysInMonth(tmp[1].toInt(), year)) return ""
+        return String.format("%d %s %d", day, month, year);
+    } catch (e: NumberFormatException) {
+        return ""
+    }
+}
 
 /**
  * Средняя
